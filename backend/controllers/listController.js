@@ -1,0 +1,40 @@
+const List = require("../models/list");
+
+class ListController {
+  static async readUserList(req, res, next) {
+    const { UserId } = req.userData;
+    try {
+      const lists = await List.find({ UserId });
+      if (!lists || lists.length === 0) {
+        throw { name: "ListNotFound" };
+      } else {
+        res.status(200).json({
+          data: lists,
+        });
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async createNewList(req, res, next) {
+    const { listName } = req.body;
+    const { UserId } = req.userData;
+
+    try {
+      const addList = new List({ listName, UserId });
+
+      await addList.save();
+
+      res.status(201).json({
+        data: addList,
+        message: "List has been created!",
+      });
+
+    } catch (error) {
+      next(error);
+    }
+  }
+}
+
+module.exports = ListController;
