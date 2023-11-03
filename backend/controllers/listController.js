@@ -13,7 +13,7 @@ class ListController {
         });
       }
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -30,7 +30,28 @@ class ListController {
         data: addList,
         message: "List has been created!",
       });
+    } catch (error) {
+      next(error);
+    }
+  }
 
+  static async renameList(req, res, next) {
+    const { _id } = req.params;
+    const { listName } = req.body;
+
+    try {
+      const updatedList = await List.findByIdAndUpdate(
+        { _id: _id },
+        { $set: { listName: listName } },
+        { new: true }
+      );
+
+      if (!updatedList) throw { name: "ListNotFound" };
+
+      res.status(200).json({
+        data: updatedList,
+        message: "List has been renamed.",
+      });
     } catch (error) {
       next(error);
     }
