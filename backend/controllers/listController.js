@@ -25,7 +25,7 @@ class ListController {
       const addList = new List({ listName, UserId });
 
       await addList.save();
-
+      
       res.status(201).json({
         data: addList,
         message: "List has been created!",
@@ -51,6 +51,22 @@ class ListController {
       res.status(200).json({
         data: updatedList,
         message: "List has been renamed.",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async deleteList(req, res, next) {
+    const { _id } = req.params;
+
+    try {
+      const deletedList = await List.findByIdAndDelete({ _id });
+
+      if (!deletedList) throw { name: "ListNotFound" };
+
+      res.status(200).json({
+        message: "List has been deleted.",
       });
     } catch (error) {
       next(error);

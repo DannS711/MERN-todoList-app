@@ -5,5 +5,6 @@ const router = express.Router();
 router.post("/create", ListController.createNewList);
 router.get("/read", ListController.readUserList);
 router.patch("/rename/:_id", ListController.renameList);
+router.delete("/delete/:_id", ListController.deleteList)
 
 module.exports = router;
