@@ -18,7 +18,7 @@ app.use("/user", userRouter);
 
 app.use(authentication)
 
-app.use("/taskList", taskListRouter);
+app.use("/tasklist", taskListRouter);
 
 app.use(errorHandler);
 

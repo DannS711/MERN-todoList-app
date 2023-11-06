@@ -34,6 +34,11 @@ const errorHandler = (err, req, res, next) => {
         .json({ message: "You don't have a list to work on yet!" });
       break;
 
+    case "TaskNotFound":
+      res
+        .status(404)
+        .json({ message: "You don't have a task to do on your list!" });
+
     default:
       console.log(err);
       res.status(500).json({ error: "Internal server error" });

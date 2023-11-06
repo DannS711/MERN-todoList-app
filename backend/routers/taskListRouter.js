@@ -9,6 +9,9 @@ router.patch("/rename/:_id", TaskListController.renameList);
 router.delete("/delete/:_id", TaskListController.deleteList)
 
 // Task CRUD route
-
+router.post("/", TaskListController)
+router.get("/tasks/:_id", TaskListController.getTaskByListId)
+router.put("/", TaskListController)
+router.delete("/", TaskListController)
 
 module.exports = router;
