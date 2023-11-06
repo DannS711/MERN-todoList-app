@@ -3,7 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const { default: mongoose } = require("mongoose");
 const userRouter = require("./routers/userRouter");
-const listsRouter = require("./routers/listsRouter");
 const taskListRouter = require("./routers/taskListRouter");
 const errorHandler = require("./middlewares/errorHandler");
 const authentication = require("./middlewares/authentication");
@@ -19,8 +18,7 @@ app.use("/user", userRouter);
 
 app.use(authentication)
 
-app.use("/list", listsRouter);
-app.use("/task", taskListRouter);
+app.use("/taskList", taskListRouter);
 
 app.use(errorHandler);
 

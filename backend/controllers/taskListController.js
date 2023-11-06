@@ -1,6 +1,24 @@
 const List = require("../models/list");
 
-class ListController {
+class TaskListController {
+  static async createNewList(req, res, next) {
+    const { listName } = req.body;
+    const { UserId } = req.userData;
+  
+    try {
+      const addList = new List({ listName, UserId });
+  
+      await addList.save();
+      
+      res.status(201).json({
+        data: addList,
+        message: "List has been created!",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async readUserList(req, res, next) {
     const { UserId } = req.userData;
     try {
@@ -12,24 +30,6 @@ class ListController {
           data: lists,
         });
       }
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  static async createNewList(req, res, next) {
-    const { listName } = req.body;
-    const { UserId } = req.userData;
-
-    try {
-      const addList = new List({ listName, UserId });
-
-      await addList.save();
-      
-      res.status(201).json({
-        data: addList,
-        message: "List has been created!",
-      });
     } catch (error) {
       next(error);
     }
@@ -74,4 +74,4 @@ class ListController {
   }
 }
 
-module.exports = ListController;
+module.exports = TaskListController;

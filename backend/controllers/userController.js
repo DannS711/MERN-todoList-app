@@ -1,6 +1,6 @@
 const { signToken } = require("../helpers/jwt");
 const { passwordChecker } = require("../helpers/bcryptJs");
-const User = require("../models/Users");
+const User = require("../models/user");
 
 class UserController {
   static async register(req, res, next) {
@@ -16,7 +16,6 @@ class UserController {
         password,
       });
       await createUser.save();
-      
 
       res.status(200).json({ message: "Account has been created" });
     } catch (error) {
