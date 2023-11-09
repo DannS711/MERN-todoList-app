@@ -38,6 +38,7 @@ const errorHandler = (err, req, res, next) => {
       res
         .status(404)
         .json({ message: "You don't have a task to do on your list!" });
+      break;
 
     default:
       console.log(err);

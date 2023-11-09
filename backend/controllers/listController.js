@@ -1,7 +1,6 @@
 const List = require("../models/list");
-const Task = require("../models/task");
 
-class TaskListController {
+class ListController {
   static async createNewList(req, res, next) {
     const { listName } = req.body;
     const { UserId } = req.userData;
@@ -73,32 +72,6 @@ class TaskListController {
       next(error);
     }
   }
-
-  static async getTaskByListId(req, res, next) {
-    const { _id } = req.params;
-  
-    try {
-      const getListById = await List.findById(_id);
-  
-      if (!getListById) {
-        throw { name: "ListNotFound" };
-      }
-  
-      const getTasks = await Task.find({ ListId: _id });
-  
-      if (!getTasks || getTasks.length === 0) {
-        throw { name: "TaskNotFound" };
-      } else {
-        res.status(200).json({
-          data: getTasks,
-        });
-        return;
-      }
-    } catch (error) {
-      next(error);
-    }
-  }
-  
 }
 
-module.exports = TaskListController;
+module.exports = ListController;
