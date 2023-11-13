@@ -71,18 +71,18 @@ class TaskController {
   static async changeTaskStatus(req, res, next) {
     const { _id } = req.params;
     const { isCompleted } = req.body;
-  
+
     try {
       const changeStatus = await Task.findByIdAndUpdate(
         _id,
         { $set: { isCompleted } },
         { new: true, lean: true }
       );
-  
+
       if (!changeStatus) {
         throw { name: "TaskNotFound" };
       }
-  
+
       res.status(200).json({
         data: changeStatus,
       });
@@ -90,7 +90,21 @@ class TaskController {
       next(error);
     }
   }
-  
+
+  static async deleteTask(req, res, next) {
+    const { _id } = req.params;
+    try {
+      const removeTask = await Task.findByIdAndDelete({ _id });
+
+      if (!removeTask) throw { name: "TaskNotFound" };
+
+      res.status(201).json({
+        message: "Task removed!",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = TaskController;
