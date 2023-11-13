@@ -61,12 +61,36 @@ class TaskController {
       if (!updatedTask) throw { name: "TaskNotFound" };
 
       res.status(201).json({
-        data: updatedTask
-      })
+        data: updatedTask,
+      });
     } catch (error) {
       next(error);
     }
   }
+
+  static async changeTaskStatus(req, res, next) {
+    const { _id } = req.params;
+    const { isCompleted } = req.body;
+  
+    try {
+      const changeStatus = await Task.findByIdAndUpdate(
+        _id,
+        { $set: { isCompleted } },
+        { new: true, lean: true }
+      );
+  
+      if (!changeStatus) {
+        throw { name: "TaskNotFound" };
+      }
+  
+      res.status(200).json({
+        data: changeStatus,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  
 }
 
 module.exports = TaskController;

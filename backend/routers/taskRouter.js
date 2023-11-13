@@ -1,5 +1,4 @@
 const express = require("express");
-const TaskListController = require("../controllers/listController");
 const TaskController = require("../controllers/taskController");
 const router = express.Router();
 
@@ -7,6 +6,7 @@ const router = express.Router();
 router.post("/create/:_id", TaskController.createTask)
 router.get("/tasks/:_id", TaskController.getTaskByListId)
 router.patch("/rewrite/:_id", TaskController.rewriteTask)
+router.patch("/status/:_id", TaskController.changeTaskStatus)
 router.delete("/", TaskController)
 
 module.exports = router
