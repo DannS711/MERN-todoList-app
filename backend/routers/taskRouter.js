@@ -6,7 +6,7 @@ const router = express.Router();
 // Task CRUD route
 router.post("/create/:_id", TaskController.createTask)
 router.get("/tasks/:_id", TaskController.getTaskByListId)
-router.put("/", TaskController)
+router.patch("/rewrite/:_id", TaskController.rewriteTask)
 router.delete("/", TaskController)
 
 module.exports = router

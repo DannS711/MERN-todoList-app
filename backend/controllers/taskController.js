@@ -47,6 +47,26 @@ class TaskController {
       next(error);
     }
   }
+
+  static async rewriteTask(req, res, next) {
+    const { _id } = req.params;
+    const { task } = req.body;
+    try {
+      const updatedTask = await Task.findByIdAndUpdate(
+        { _id: _id },
+        { $set: { task } },
+        { new: true }
+      );
+
+      if (!updatedTask) throw { name: "TaskNotFound" };
+
+      res.status(201).json({
+        data: updatedTask
+      })
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = TaskController;
