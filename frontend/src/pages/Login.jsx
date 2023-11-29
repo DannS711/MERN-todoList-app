@@ -5,12 +5,18 @@ import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [form, setForm] = useState({});
+  const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({
       ...form,
-      [e.target.type]: e.target.value,
+      [e.target.id]: e.target.value,
+    });
+
+    setErrors({
+      ...errors,
+      [e.target.id]: "",
     });
   };
 
@@ -22,12 +28,27 @@ function Login() {
         url: `${baseServerAPI}/user/login`,
         data: form,
       });
-      // navigate("/");
+      localStorage.setItem("access_token", data.access_token);
+      navigate("/");
     } catch (error) {
       console.log(error);
-      // const errMsg = error.response.data.message
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        const errMsg = error.response.data.message;
+        setErrors({
+          message: errMsg,
+        });
+      } else {
+        setErrors({
+          message: "An unexpected error occurred. Please try again.",
+        });
+      }
     }
   };
+
   return (
     <>
       <div className="flex items-center justify-center min-h-screen">
@@ -35,6 +56,9 @@ function Login() {
           <div className="max-w-md mx-auto space-y-3">
             <h3 className="text-lg font-semibold">Login Form</h3>
             <form onSubmit={handleSubmit}>
+              {errors.message && (
+                <p className="text-red-500 text-sm mt-1">{errors.message}</p>
+              )}
               <div>
                 <label className="block py-1">Email</label>
                 <input
@@ -57,6 +81,16 @@ function Login() {
                 <button className="border px-4 py-2 rounded-lg shadow active:bg-gray-100">
                   Login
                 </button>
+                <p>
+                  Dont have an account?
+                  <a
+                    href="/register"
+                    className="text-blue-500 hover:underline mx-1"
+                  >
+                    Register
+                  </a>
+                  here!
+                </p>
               </div>
             </form>
           </div>
