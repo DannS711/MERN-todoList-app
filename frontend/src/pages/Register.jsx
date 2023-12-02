@@ -1,12 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { baseServerAPI } from "../utils";
+import { baseServerAPI } from "../../utils/index.js";
 import axios from "axios";
+import {
+  registerStart,
+  registerSuccess,
+  registerFailure,
+} from "../redux/slices/user.js";
+import { useDispatch, useSelector } from "react-redux";
 
 function Register() {
   const [form, setForm] = useState({});
   const [errors, setErrors] = useState({});
+  const { loading } = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleChange = (e) => {
     setForm({
@@ -22,12 +30,14 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      dispatch(registerStart());
       const { data } = await axios({
         method: "POST",
         url: `${baseServerAPI}/user/register`,
         data: form,
       });
       console.log(data);
+      dispatch(registerSuccess(data));
       navigate("/login");
     } catch (error) {
       console.log(error);
@@ -40,11 +50,7 @@ function Register() {
           email: errors.email || "",
           password: errors.password || "",
         });
-      } else if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
+      } else if (errMsgUnique) {
         setErrors({
           uniqueMsg: errMsgUnique,
         });
@@ -56,9 +62,9 @@ function Register() {
           password: "An unexpected error occurred. Please try again.",
         });
       }
+      dispatch(registerFailure(errors));
     }
   };
-
   return (
     <>
       <div className="flex items-center justify-center min-h-screen">
@@ -106,8 +112,11 @@ function Register() {
                 )}
               </div>
               <div className="flex gap-3 pt-3 items-center">
-                <button className="border px-4 py-2 rounded-lg shadow active:bg-gray-100">
-                  Register
+                <button
+                  disabled={loading}
+                  className="border px-4 py-2 rounded-lg shadow active:bg-gray-100"
+                >
+                  {loading ? "Loading..." : "Register"}
                 </button>
                 <p>
                   Already have an account?

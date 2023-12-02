@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import { baseServerAPI } from "../utils";
+import { baseServerAPI } from "../../utils/index.js";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
