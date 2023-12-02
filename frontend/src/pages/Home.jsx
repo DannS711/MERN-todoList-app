@@ -1,7 +1,11 @@
+import ListsTable from "../components/ListsTable";
+
 function Home() {
   return (
-    <div>home</div>
-  )
+    <>
+      <ListsTable />
+    </>
+  );
 }
 
-export default Home
+export default Home;

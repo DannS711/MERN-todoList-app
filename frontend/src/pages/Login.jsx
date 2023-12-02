@@ -2,10 +2,17 @@ import { useState } from "react";
 import axios from "axios";
 import { baseServerAPI } from "../utils";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+} from "../redux/slices/user.js";
 
 function Login() {
   const [form, setForm] = useState({});
-  const [errors, setErrors] = useState({});
+  const { error, loading } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -13,39 +20,28 @@ function Login() {
       ...form,
       [e.target.id]: e.target.value,
     });
-
-    setErrors({
-      ...errors,
-      [e.target.id]: "",
-    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      dispatch(loginStart());
       const { data } = await axios({
         method: "POST",
         url: `${baseServerAPI}/user/login`,
         data: form,
       });
       localStorage.setItem("access_token", data.access_token);
+      dispatch(loginSuccess(data.access_token));
       navigate("/");
     } catch (error) {
       console.log(error);
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        const errMsg = error.response.data.message;
-        setErrors({
-          message: errMsg,
-        });
-      } else {
-        setErrors({
-          message: "An unexpected error occurred. Please try again.",
-        });
-      }
+      dispatch(
+        loginFailure(
+          error.response?.data?.message ||
+            "An unexpected error occurred. Please try again."
+        )
+      );
     }
   };
 
@@ -56,9 +52,7 @@ function Login() {
           <div className="max-w-md mx-auto space-y-3">
             <h3 className="text-lg font-semibold">Login Form</h3>
             <form onSubmit={handleSubmit}>
-              {errors.message && (
-                <p className="text-red-500 text-sm mt-1">{errors.message}</p>
-              )}
+              {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
               <div>
                 <label className="block py-1">Email</label>
                 <input
@@ -78,11 +72,14 @@ function Login() {
                 />
               </div>
               <div className="flex gap-3 pt-3 items-center">
-                <button className="border px-4 py-2 rounded-lg shadow active:bg-gray-100">
-                  Login
+                <button
+                  disabled={loading}
+                  className="border px-4 py-2 rounded-lg shadow active:bg-gray-100"
+                >
+                  {loading ? "Loading..." : "Login"}
                 </button>
                 <p>
-                  Dont have an account?
+                  {"Don't have an account?"}
                   <a
                     href="/register"
                     className="text-blue-500 hover:underline mx-1"
