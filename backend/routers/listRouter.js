@@ -5,7 +5,7 @@ const router = express.Router();
 // List CRUD route
 router.post("/create", ListController.createNewList);
 router.get("/lists", ListController.readUserList);
-router.patch("/rename/:_id", ListController.renameList);
+router.put("/rename/:_id", ListController.renameList);
 router.delete("/delete/:_id", ListController.deleteList)
 
 
