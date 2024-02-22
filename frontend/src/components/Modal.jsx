@@ -1,4 +1,4 @@
-const EditModal = ({ isOpened, onClose, children }) => {
+const Modal = ({ isOpened, onClose, children }) => {
   if (!isOpened) return null;
 
   const handleClose = (e) => {
@@ -19,4 +19,4 @@ const EditModal = ({ isOpened, onClose, children }) => {
   );
 };
 
-export default EditModal;
+export default Modal;

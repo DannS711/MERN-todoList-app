@@ -10,7 +10,7 @@ import {
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { baseServerAPI } from "../../utils";
-import EditModal from "./EditModal";
+import Modal from "./Modal";
 
 function ListsTable() {
   const [lists, setLists] = useState([]);
@@ -19,6 +19,7 @@ function ListsTable() {
   const [form, setForm] = useState({
     listName: "",
   });
+  const [modalType, setModalType] = useState("");
 
   useEffect(() => {
     const getLists = async () => {
@@ -55,7 +56,27 @@ function ListsTable() {
           },
         });
         setShowModal(false);
-        window.location.reload()
+        window.location.reload();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const handleDeleteList = async (e) => {
+    e.preventDefault();
+
+    if (selectedListId) {
+      try {
+        await axios({
+          method: "DELETE",
+          url: `${baseServerAPI}/list/delete/${selectedListId}`,
+          headers: {
+            access_token: localStorage.getItem("access_token"),
+          },
+        });
+        setShowModal(false);
+        window.location.reload();
       } catch (error) {
         console.log(error);
       }
@@ -63,17 +84,22 @@ function ListsTable() {
   };
 
   const handleEditButtonClick = (listId, listName) => {
-    console.log(listName);
     setSelectedListId(listId);
     setForm({
       listName,
     });
+    setModalType("edit");
+    setShowModal(true);
+  };
+
+  const handleDeleteModalClick = (listId) => {
+    setSelectedListId(listId);
+    setModalType("delete");
     setShowModal(true);
   };
 
   const handleInputChanges = (e) => {
     const { id, value } = e.target;
-    console.log(value);
     setForm((prevForm) => ({
       ...prevForm,
       [id]: value,
@@ -107,7 +133,7 @@ function ListsTable() {
                   >
                     <img src="/edit.svg" alt="edit" height="20" width="20" />
                   </button>
-                  <button>
+                  <button onClick={() => handleDeleteModalClick(list._id)}>
                     <img
                       src="/delete.svg"
                       alt="Delete"
@@ -121,38 +147,65 @@ function ListsTable() {
           </TableBody>
         </Table>
       </div>
-
-      <EditModal isOpened={showModal} onClose={() => setShowModal(false)}>
-        <h1 className="text-2xl text-center font-medium">Rename List</h1>
-        <form className="max-w-sm mx-auto" onSubmit={handleFormSubmit}>
-          <div className="mb-5">
-            <input
-              type="text"
-              id="listName"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-              placeholder="Insert new name"
-              required
-              value={form.listName}
-              onChange={handleInputChanges}
-            />
-          </div>
-          <div className="flex justify-center items-center space-x-4">
-            <button
-              type="submit"
-              className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-            >
-              Submit
-            </button>
-            <button
-              type="button"
-              className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-              onClick={() => setShowModal(false)}
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
-      </EditModal>
+      <Modal isOpened={showModal} onClose={() => setShowModal(false)}>
+        {modalType === "edit" ? (
+          <>
+            <h1 className="text-2xl text-center font-medium">Rename List</h1>
+            <form className="max-w-sm mx-auto" onSubmit={handleFormSubmit}>
+              <div className="mb-5">
+                <input
+                  type="text"
+                  id="listName"
+                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+                  placeholder="Insert new name"
+                  required
+                  value={form.listName}
+                  onChange={handleInputChanges}
+                />
+              </div>
+              <div className="flex justify-center items-center space-x-4">
+                <button
+                  type="submit"
+                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                >
+                  Submit
+                </button>
+                <button
+                  type="button"
+                  className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                  onClick={() => setShowModal(false)}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </>
+        ) : (
+          <>
+            <div className="p-4">
+              <h1 className="text-center text-3xl font-semibold">
+                Are you sure you want to delete this list?
+              </h1>
+            </div>
+            <div className="flex justify-center items-center space-x-4 m-3">
+              <button
+                type="button"
+                className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-400 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                onClick={handleDeleteList}
+              >
+                Delete
+              </button>
+              <button
+                type="button"
+                className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-400 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                onClick={() => setShowModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        )}
+      </Modal>
     </>
   );
 }
