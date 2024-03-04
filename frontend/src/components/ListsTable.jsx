@@ -10,10 +10,13 @@ import {
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { baseServerAPI } from "../../utils";
-import Modal from "./Modal";
+import EditModal from "./EditModal";
+import DeleteModal from "./DeleteModal";
+import AddModal from "./AddModal";
 
 function ListsTable() {
   const [lists, setLists] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [selectedListId, setSelectedListId] = useState(null);
   const [form, setForm] = useState({
@@ -32,15 +35,17 @@ function ListsTable() {
           },
         });
         setLists(data.data);
+        setLoading(false);
       } catch (error) {
         console.log(error);
+        setLoading(false);
       }
     };
 
     getLists();
   }, []);
 
-  const handleFormSubmit = async (e) => {
+  const handleEditFormSubmit = async (e) => {
     e.preventDefault();
 
     if (selectedListId) {
@@ -83,6 +88,28 @@ function ListsTable() {
     }
   };
 
+  const handleAddNewList = async (e) => {
+    e.preventDefault();
+
+    try {
+      const { data } = await axios({
+        method: "POST",
+        url: `${baseServerAPI}/list/create`,
+        headers: {
+          access_token: localStorage.getItem("access_token"),
+        },
+        data: {
+          listName: form.listName,
+        },
+      });
+      setShowModal(false);
+      console.log(data);
+      window.location.reload();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleEditButtonClick = (listId, listName) => {
     setSelectedListId(listId);
     setForm({
@@ -106,9 +133,31 @@ function ListsTable() {
     }));
   };
 
+  const showAddListModal = () => {
+    setModalType("add");
+    setShowModal(true);
+  };
+
+  if (loading) {
+    return (
+      <>
+        <h1 className="text-center font-extrabold text-5xl mt-72">
+          Loading...
+        </h1>
+      </>
+    );
+  }
+
   return (
     <>
       <div className="overflow-x-auto px-4 sm:px-8 md:px-16 lg:px-32 py-8 sm:py-16">
+        <button
+          className="bg-white p-2 mb-1 rounded-lg font-semibold hover:bg-slate-100 active:bg-slate-200 flex items-center justify-center"
+          onClick={showAddListModal}
+        >
+          <img src="/add.svg" alt="add" height="20" width="20" />
+          Add List
+        </button>
         <Table>
           <TableHead>
             <TableHeadCell className="text-center">List name</TableHeadCell>
@@ -147,65 +196,31 @@ function ListsTable() {
           </TableBody>
         </Table>
       </div>
-      <Modal isOpened={showModal} onClose={() => setShowModal(false)}>
-        {modalType === "edit" ? (
-          <>
-            <h1 className="text-2xl text-center font-medium">Rename List</h1>
-            <form className="max-w-sm mx-auto" onSubmit={handleFormSubmit}>
-              <div className="mb-5">
-                <input
-                  type="text"
-                  id="listName"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                  placeholder="Insert new name"
-                  required
-                  value={form.listName}
-                  onChange={handleInputChanges}
-                />
-              </div>
-              <div className="flex justify-center items-center space-x-4">
-                <button
-                  type="submit"
-                  className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-                >
-                  Submit
-                </button>
-                <button
-                  type="button"
-                  className="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-                  onClick={() => setShowModal(false)}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </>
-        ) : (
-          <>
-            <div className="p-4">
-              <h1 className="text-center text-3xl font-semibold">
-                Are you sure you want to delete this list?
-              </h1>
-            </div>
-            <div className="flex justify-center items-center space-x-4 m-3">
-              <button
-                type="button"
-                className="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-400 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-                onClick={handleDeleteList}
-              >
-                Delete
-              </button>
-              <button
-                type="button"
-                className="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-400 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-                onClick={() => setShowModal(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </>
-        )}
-      </Modal>
+      {modalType === "edit" && (
+        <EditModal
+          isOpened={showModal}
+          onClose={() => setShowModal(false)}
+          onSubmit={handleEditFormSubmit}
+          form={form}
+          handleInputChanges={handleInputChanges}
+        />
+      )}
+      {modalType === "delete" && (
+        <DeleteModal
+          isOpened={showModal}
+          onClose={() => setShowModal(false)}
+          onDelete={handleDeleteList}
+        />
+      )}
+      {modalType === "add" && (
+        <AddModal
+          isOpened={showModal}
+          onClose={() => setShowModal(false)}
+          onSubmit={handleAddNewList}
+          handleInputChanges={handleInputChanges}
+          form={form}
+        />
+      )}
     </>
   );
 }
