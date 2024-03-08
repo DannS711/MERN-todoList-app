@@ -92,7 +92,7 @@ function ListsTable() {
     e.preventDefault();
 
     try {
-      const { data } = await axios({
+      await axios({
         method: "POST",
         url: `${baseServerAPI}/list/create`,
         headers: {
@@ -103,7 +103,6 @@ function ListsTable() {
         },
       });
       setShowModal(false);
-      console.log(data);
       window.location.reload();
     } catch (error) {
       console.log(error);
@@ -141,7 +140,7 @@ function ListsTable() {
   if (loading) {
     return (
       <>
-        <h1 className="text-center font-extrabold text-5xl mt-72">
+        <h1 className="flex justify-center items-center h-screen font-extrabold text-5xl">
           Loading...
         </h1>
       </>
@@ -151,57 +150,77 @@ function ListsTable() {
   return (
     <>
       <div className="overflow-x-auto px-4 sm:px-8 md:px-16 lg:px-32 py-8 sm:py-16">
-        <button
-          className="bg-white p-2 mb-1 rounded-lg font-semibold hover:bg-slate-100 active:bg-slate-200 flex items-center justify-center"
-          onClick={showAddListModal}
-        >
-          <img src="/add.svg" alt="add" height="20" width="20" />
-          Add List
-        </button>
-        <Table>
-          <TableHead>
-            <TableHeadCell className="text-center">List name</TableHeadCell>
-            <TableHeadCell className="text-center">
-              <span className=""></span>
-            </TableHeadCell>
-          </TableHead>
-          <TableBody className="divide-y">
-            {lists.map((list, index) => (
-              <TableRow key={index} className="bg-white">
-                <TableCell className="whitespace-nowrap font-medium text-gray-900 text-center">
-                  <Link to={`/task/${list._id}`}>
-                    <p className="text-slate-700 font-semibold flex-1 hover:underline truncate">
-                      {list.listName}
-                    </p>
-                  </Link>
-                </TableCell>
-                <TableCell className="text-center flex justify-center items-center">
-                  <button
-                    className="mr-5"
-                    onClick={() => handleEditButtonClick(list._id)}
-                  >
-                    <img src="/edit.svg" alt="edit" height="20" width="20" />
-                  </button>
-                  <button onClick={() => handleDeleteModalClick(list._id)}>
-                    <img
-                      src="/delete.svg"
-                      alt="Delete"
-                      height="20"
-                      width="20"
-                    />
-                  </button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        {lists.length === 0 ? (
+          <div className="text-center">
+            <p className="font-bold text-2xl mt-60">
+              No lists available. Create a new list!
+            </p>
+            <button
+              className="bg-white text-black p-2 rounded-lg mt-4 font-medium"
+              onClick={showAddListModal}
+            >
+              Create List
+            </button>
+          </div>
+        ) : (
+          <>
+            <button
+              className="bg-white p-2 mb-1 rounded-lg font-semibold hover:bg-slate-100 active:bg-slate-200 flex items-center justify-center sm:mr-5"
+              onClick={showAddListModal}
+            >
+              <img src="/add.svg" alt="add" height="20" width="20" />
+              Create List
+            </button>
+            <Table className="w-full">
+              <TableHead>
+                <TableHeadCell className="text-center">List name</TableHeadCell>
+                <TableHeadCell className="text-center">
+                  <span></span>
+                </TableHeadCell>
+              </TableHead>
+              <TableBody className="divide-y">
+                {lists.map((list, index) => (
+                  <TableRow key={index} className="bg-white">
+                    <TableCell className="whitespace-nowrap font-medium text-gray-900 text-center">
+                      <Link to={`/task/${list._id}`}>
+                        <p className="text-slate-700 font-semibold flex-1 hover:underline truncate">
+                          {list.listName}
+                        </p>
+                      </Link>
+                    </TableCell>
+                    <TableCell className="text-center flex justify-center items-center gap-3">
+                      <button
+                        className="sm:mr-5"
+                        onClick={() => handleEditButtonClick(list._id)}
+                      >
+                        <img
+                          src="/edit.svg"
+                          alt="edit"
+                          height="20"
+                          width="20"
+                        />
+                      </button>
+                      <button onClick={() => handleDeleteModalClick(list._id)}>
+                        <img
+                          src="/delete.svg"
+                          alt="Delete"
+                          height="20"
+                          width="20"
+                        />
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </>
+        )}
       </div>
       {modalType === "edit" && (
         <EditModal
           isOpened={showModal}
           onClose={() => setShowModal(false)}
           onSubmit={handleEditFormSubmit}
-          form={form}
           handleInputChanges={handleInputChanges}
         />
       )}
@@ -218,7 +237,6 @@ function ListsTable() {
           onClose={() => setShowModal(false)}
           onSubmit={handleAddNewList}
           handleInputChanges={handleInputChanges}
-          form={form}
         />
       )}
     </>

@@ -3,7 +3,7 @@ import ListsTable from "../components/ListsTable";
 function Home() {
   return (
     <>
-      <div className="px-[350px]">
+      <div className="xl:px-[350px]">
         <ListsTable />
       </div>
     </>

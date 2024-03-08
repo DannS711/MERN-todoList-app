@@ -3,7 +3,6 @@ const AddModal = ({
   onClose,
   onSubmit,
   handleInputChanges,
-  form,
 }) => {
   if (!isOpened) return null;
 
@@ -19,16 +18,16 @@ const AddModal = ({
     >
       <div className="w-[600px]">
         <div className="bg-white p-2 rounded">
-          <h1 className="text-2xl text-center font-medium">Add List</h1>
+          <h1 className="text-2xl text-center font-medium">Create</h1>
           <form className="max-w-sm mx-auto" onSubmit={onSubmit}>
             <div className="mb-5">
               <input
                 type="text"
                 id="listName"
+                name="task"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-                placeholder="Insert new name"
+                placeholder="Fill the input"
                 required
-                value={form.listName}
                 onChange={handleInputChanges}
               />
             </div>

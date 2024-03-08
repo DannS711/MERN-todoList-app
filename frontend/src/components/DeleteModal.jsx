@@ -15,7 +15,7 @@ const DeleteModal = ({ isOpened, onClose, onDelete }) => {
         <div className="bg-white p-2 rounded">
           <div className="p-4">
             <h1 className="text-center text-3xl font-semibold">
-              Are you sure you want to delete this list?
+              Are you sure you want to delete it?
             </h1>
           </div>
           <div className="flex justify-center items-center space-x-4 m-3">

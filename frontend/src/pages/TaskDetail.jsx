@@ -1,9 +1,9 @@
-import TaskTable from "../components/taskTable";
+import TaskTable from "../components/TaskTable";
 
 function TaskDetail() {
   return (
     <>
-      <div className="overflow-x-auto px-[600px] py-16">
+      <div className="xl:px-[600px]">
         <TaskTable />
       </div>
     </>
