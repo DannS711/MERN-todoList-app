@@ -37,7 +37,7 @@ class UserController {
         throw { name: "UserNotFound" }
       }
 
-      const isValid = await passwordChecker(password, user.password);
+      const isValid = passwordChecker(password, user.password);
 
       if (isValid) {
         const access_token = signToken({

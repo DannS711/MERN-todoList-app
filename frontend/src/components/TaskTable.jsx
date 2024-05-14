@@ -70,30 +70,79 @@ const TaskTable = () => {
         method: "POST",
         url: `${baseServerAPI}/task/create/${ListId}`,
         headers: {
-          access_token: localStorage.getItem("access_token")
+          access_token: localStorage.getItem("access_token"),
         },
         data: {
-          task: form.task
-        }
-      })
-      setLoading(false)
-      window.location.reload()
+          task: form.task,
+        },
+      });
+      setLoading(false);
+      window.location.reload();
     } catch (error) {
       console.log(error);
-      setLoading(false)
+      setLoading(false);
     }
   };
+
+  const handleEditFormSubmit = async (e) => {
+    e.preventDefault();
+
+    if (taskId) {
+      try {
+        await axios({
+          method: "PATCH",
+          url: `${baseServerAPI}/task/rewrite/${taskId}`,
+          headers: {
+            access_token: localStorage.getItem("access_token")
+          },
+          data: {
+            task: form.task
+          }
+        })
+        setShowModal(false)
+        window.location.reload()
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const handleDeleteTask = async (e) => {
+    e.preventDefault()
+
+    if(taskId) {
+      try {
+        await axios({
+          method: "DELETE",
+          url: `${baseServerAPI}/task/delete/${taskId}`,
+          headers: {
+            access_token: localStorage.getItem("access_token"),
+          },
+        });
+        setShowModal(false);
+        window.location.reload();
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
 
   const showCreateTaskmodal = () => {
     setModalType("add");
     setShowModal(true);
   };
 
-  const showEditTaskModal = (taskId) => {
-    setTaskId(taskId);
+  const showEditTaskModal = (IdTask) => {
+    setTaskId(IdTask);
     setModalType("edit");
     setShowModal(true);
   };
+
+  const showDeleteTaskModal = (IdTask) => {
+    setTaskId(IdTask)
+    setModalType("delete")
+    setShowModal(true)
+  }
 
   const handleInputChanges = (e) => {
     const { name, value } = e.target;
@@ -101,7 +150,6 @@ const TaskTable = () => {
       ...prevForm,
       [name]: value,
     }));
-    console.log(form);
   };
 
   if (loading) {
@@ -165,7 +213,9 @@ const TaskTable = () => {
                           width="20"
                         />
                       </button>
-                      <button>
+                      <button
+                        onClick={() => showDeleteTaskModal(task._id)}
+                      >
                         <img
                           src="/delete.svg"
                           alt="Delete"
@@ -185,7 +235,7 @@ const TaskTable = () => {
         <EditModal
           isOpened={showModal}
           onClose={() => setShowModal(false)}
-          // onSubmit={handleEditFormSubmit}
+          onSubmit={handleEditFormSubmit}
           handleInputChanges={handleInputChanges}
         />
       )}
@@ -193,7 +243,7 @@ const TaskTable = () => {
         <DeleteModal
           isOpened={showModal}
           onClose={() => setShowModal(false)}
-          // onDelete={handleDeleteList}
+          onDelete={handleDeleteTask}
         />
       )}
       {modalType === "add" && (
