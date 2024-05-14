@@ -47,8 +47,8 @@ function Login() {
 
   return (
     <>
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="w-full max-w-lg px-10 py-8 mx-auto bg-white border rounded-lg shadow-2xl">
+      <div className="flex items-center justify-center px-4">
+        <div className="w-full max-w-lg px-10 py-8 mx-auto bg-white border rounded-lg shadow-2xl mt-[9rem] sm:mt-[12rem]">
           <div className="max-w-md mx-auto space-y-3">
             <h3 className="text-lg font-semibold">Login Form</h3>
             <form onSubmit={handleSubmit}>
