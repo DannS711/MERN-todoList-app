@@ -7,7 +7,7 @@ import {
   TableHeadCell,
   TableRow,
 } from "flowbite-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { baseServerAPI } from "../../utils";
 import EditModal from "./EditModal";
@@ -15,6 +15,8 @@ import DeleteModal from "./DeleteModal";
 import AddModal from "./AddModal";
 
 function ListsTable() {
+  const navigate = useNavigate()
+
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
@@ -137,6 +139,11 @@ function ListsTable() {
     setShowModal(true);
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    navigate("/login")
+  };
+
   if (loading) {
     return (
       <>
@@ -164,13 +171,22 @@ function ListsTable() {
           </div>
         ) : (
           <>
-            <button
-              className="bg-white p-2 mb-1 rounded-lg font-semibold hover:bg-slate-100 active:bg-slate-200 flex items-center justify-center sm:mr-5"
-              onClick={showAddListModal}
-            >
-              <img src="/add.svg" alt="add" height="20" width="20" />
-              Create List
-            </button>
+            <div className="flex items-center justify-between">
+              <button
+                className="flex bg-white p-2 mb-1 rounded-lg font-semibold hover:bg-slate-100 active:bg-slate-200"
+                onClick={showAddListModal}
+              >
+                <img src="/add.svg" alt="add" height="20" width="20" />
+                Create List
+              </button>
+              <button
+                className="flex bg-white p-2 mb-1 rounded-lg font-semibold hover:bg-slate-100 active:bg-slate-200"
+                onClick={handleLogout}
+              >
+                <img src="/logout.svg" alt="add" height="20" width="20" />
+                Logout
+              </button>
+            </div>
             <Table className="w-full">
               <TableHead>
                 <TableHeadCell className="text-center">List name</TableHeadCell>
