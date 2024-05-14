@@ -15,7 +15,7 @@ import DeleteModal from "./DeleteModal";
 import AddModal from "./AddModal";
 
 function ListsTable() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [lists, setLists] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -141,13 +141,13 @@ function ListsTable() {
 
   const handleLogout = () => {
     localStorage.removeItem("access_token");
-    navigate("/login")
+    navigate("/login");
   };
 
   if (loading) {
     return (
       <>
-        <h1 className="flex justify-center items-center h-screen font-extrabold text-5xl">
+        <h1 className="flex justify-center items-center mt-[17rem] sm:mt-[19rem] font-extrabold text-5xl">
           Loading...
         </h1>
       </>

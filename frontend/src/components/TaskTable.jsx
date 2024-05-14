@@ -2,12 +2,14 @@ import axios from "axios";
 import { Table, TableBody, TableCell, TableRow } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { baseServerAPI } from "../../utils";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AddModal from "./AddModal";
 import EditModal from "./EditModal";
 import DeleteModal from "./DeleteModal";
 
 const TaskTable = () => {
+  const navigate = useNavigate();
+
   const ListId = useParams()._id;
   const [tasks, setTasks] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -93,14 +95,14 @@ const TaskTable = () => {
           method: "PATCH",
           url: `${baseServerAPI}/task/rewrite/${taskId}`,
           headers: {
-            access_token: localStorage.getItem("access_token")
+            access_token: localStorage.getItem("access_token"),
           },
           data: {
-            task: form.task
-          }
-        })
-        setShowModal(false)
-        window.location.reload()
+            task: form.task,
+          },
+        });
+        setShowModal(false);
+        window.location.reload();
       } catch (error) {
         console.log(error);
       }
@@ -108,9 +110,9 @@ const TaskTable = () => {
   };
 
   const handleDeleteTask = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if(taskId) {
+    if (taskId) {
       try {
         await axios({
           method: "DELETE",
@@ -125,7 +127,7 @@ const TaskTable = () => {
         console.log(error);
       }
     }
-  }
+  };
 
   const showCreateTaskmodal = () => {
     setModalType("add");
@@ -139,10 +141,10 @@ const TaskTable = () => {
   };
 
   const showDeleteTaskModal = (IdTask) => {
-    setTaskId(IdTask)
-    setModalType("delete")
-    setShowModal(true)
-  }
+    setTaskId(IdTask);
+    setModalType("delete");
+    setShowModal(true);
+  };
 
   const handleInputChanges = (e) => {
     const { name, value } = e.target;
@@ -155,7 +157,7 @@ const TaskTable = () => {
   if (loading) {
     return (
       <>
-        <h1 className="flex justify-center items-center h-screen font-extrabold text-5xl">
+        <h1 className="flex justify-center items-center mt-[17rem] sm:mt-[19rem] font-extrabold text-5xl">
           Loading...
         </h1>
       </>
@@ -179,13 +181,21 @@ const TaskTable = () => {
           </div>
         ) : (
           <>
-            <button
-              className="bg-white p-2 mb-1 rounded-lg font-semibold hover:bg-slate-100 active:bg-slate-200 flex items-center justify-center"
-              onClick={showCreateTaskmodal}
-            >
-              <img src="/add.svg" alt="add" height="20" width="20" />
-              Create Task
-            </button>
+            <div className="flex items-center justify-between">
+              <button
+                className="bg-white p-2 mb-1 rounded-lg font-semibold hover:bg-slate-100 active:bg-slate-200 flex"
+                onClick={() => navigate("/")}
+              >
+                {"<-"} Back
+              </button>
+              <button
+                className="bg-white p-2 mb-1 rounded-lg font-semibold hover:bg-slate-100 active:bg-slate-200 flex"
+                onClick={showCreateTaskmodal}
+              >
+                <img src="/add.svg" alt="add" height="20" width="20" />
+                Create Task
+              </button>
+            </div>
             <Table>
               <TableBody className="divide-y">
                 {tasks.map((task, index) => (
@@ -213,9 +223,7 @@ const TaskTable = () => {
                           width="20"
                         />
                       </button>
-                      <button
-                        onClick={() => showDeleteTaskModal(task._id)}
-                      >
+                      <button onClick={() => showDeleteTaskModal(task._id)}>
                         <img
                           src="/delete.svg"
                           alt="Delete"
