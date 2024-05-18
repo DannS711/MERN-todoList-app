@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Table, TableBody, TableCell, TableRow } from "flowbite-react";
 import { useEffect, useState } from "react";
-import { baseServerAPI } from "../../utils";
+import { baseServerAPI } from "../utils";
 import { useNavigate, useParams } from "react-router-dom";
 import AddModal from "./AddModal";
 import EditModal from "./EditModal";

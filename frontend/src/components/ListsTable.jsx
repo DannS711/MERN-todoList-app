@@ -9,7 +9,7 @@ import {
 } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { baseServerAPI } from "../../utils";
+import { baseServerAPI } from "../utils";
 import EditModal from "./EditModal";
 import DeleteModal from "./DeleteModal";
 import AddModal from "./AddModal";

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { baseServerAPI } from "../../utils/index.js";
+import { baseServerAPI } from "../utils/index.js";
 import axios from "axios";
 import {
   registerStart,
